@@ -1,20 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StyleSheet } from "react-native";
+import SignIn from "./screens/SignIn";
+import SignUp from "./screens/SignUp";
+import Profile from "./screens/Profile";
+import AuthProvider, { useAuth } from "./AuthContext";
 
 export default function App() {
+  const Stack = createNativeStackNavigator();
+
+  const Navigater = () => {
+    const [user] = useAuth();
+
+    if (!user) {
+      return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="SignIn" component={SignIn} />
+        </Stack.Navigator>
+      );
+    }
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Profile" component={Profile} />
+      </Stack.Navigator>
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <AuthProvider>
+        <Navigater />
+      </AuthProvider>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const styles = StyleSheet.create({});
